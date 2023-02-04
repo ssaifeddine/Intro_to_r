@@ -1,0 +1,64 @@
+---
+title: "01_In-Class_Activity-02"
+author: "Naga Vemprala"
+date: '2023-01-26'
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## In-class activity to read files  
+
+#### Question: 1 
+```{r chunk1}
+# Read the csv file into a data frame using read.csv 
+# Hint: Check the current path using getwd() 
+# Also, unlike working with markdown files, we need to build the complete path for the file in order to read the file. 
+# Print the first 6 records of the file read into a data frame. Name the data frame as housingPrices
+getwd()
+file_name <- paste(getwd(),"/Input/",
+    "in_class_melbourne_housing_prices.csv", sep="")
+
+print(file_name)
+
+housingPrices<- read.csv(file_name)
+View(housingPrices)
+head(housingPrices)
+      
+```
+
+#### Question: 2
+```{r chunk2}
+# Print the summary of the housingPrices data set  
+summary(housingPrices)
+
+```
+
+#### Question: 3
+```{r chunk3}
+# Print the minimum date of the "Date" column 
+typeof(housingPrices$Date)
+library(lubridate)
+head(dmy(housingPrices$Date))
+housingPrices$Date <- dmy(housingPrices$Date)
+typeof(housingPrices$Date)
+min(housingPrices$Date)
+
+```
+
+
+#### Question: 4
+```{r chunk4}
+# Create a data set containing only 2 bedroom houses 
+# Print the summary of the data set two_bedroom_houses
+# Print the average price of the two bedroom houses
+filter_condition <- housingPrices$Rooms == 2
+two_bedroom_houses<- housingPrices[filter_condition, ]
+View(two_bedroom_houses)
+mean(two_bedroom_houses$Price)
+
+```
+
+
