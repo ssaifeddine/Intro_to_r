@@ -85,8 +85,11 @@ layer1<- ggplot(data = customer_data)
 layer1 +
   geom_histogram(aes(x=income)) +
   lims(x = c(0, 200000)) +
-  scale_x_continuous(labels = scales::dollar_format())
+  scale_x_continuous(labels = scales::dollar_format(),
+                     limits = c(0, 200000))
 ```
+
+Conclusion: The data is not normally distributed.
 
 - Density plots are another method for analyzing the distribution of univariate data  
 - Use the density plot to examine the age range of the customers.  
@@ -96,6 +99,8 @@ layer1 +
   geom_density(aes(x=age))
 
 ``` 
+
+Analysis: the maximum number of customers in our data set are within the age of 25 to 75.
 
 ... Might help sometimes
 
@@ -153,13 +158,12 @@ ggplot(health_ins_count_by_marital_status, aes(x=marital_status, y = ct)) +
 ```
 
 
-- Create a bar chart to present the count values of various marital_statuses 
+- Create a bar chart to present the count values of various state_of_res 
 ```{r bar_chart_desc}
 layer1 +
-  geom_bar(aes(x = marital_status, fill = health_ins), stat = "count") +
-  geom_text(aes(x = marital_status, label = ..count..),
-            stat = "count")
-
+  geom_bar(aes(x = reorder(state_of_res, state_of_res, FUN = function(x) length(x)))) +
+  scale_x_discrete(name = "state of residence") +
+  coord_flip()
 ```
 
 - Compare marital status against housing type: Categorical vs. Categorical comparison 
@@ -174,14 +178,28 @@ ggplot(customer_data[!is.na(customer_data$housing_type),]) +
 
 ```
 
+```{r facet_bar_plot2}
+ggplot(data = customer_data[!is.na(customer_data$housing_type),]) +
+  geom_bar(aes(x= marital_status, fill = health_ins), position = "dodge", stat = "count") +
+  facet_wrap(~housing_type, scales = "free_x") +
+  coord_flip()
+```
+
 - Compare population densities across categories 
 
-```{r density_comparison}
+```{r density_comparison_2}
 ggplot(data = customer_data) +
   geom_density(aes(x = age, color = marital_status, linetype = marital_status, position="fill")) + 
   scale_color_brewer(palette="Dark2")
 ```
 
+- Compare density plots for income and marital status
+
+```{r density_comparison}
+layer1 +
+  geom_density(aes(x = income, color = marital_status, linetype = marital_status)) +
+  scale_x_continuous(limits = c(0, 100000))
+```
 
 - Scatter plots to identify relationships between two continuos variables. 
 - Create a scatter plot between age and income to see if there is any relationship between them or they are just independent variables 
@@ -193,6 +211,14 @@ ggplot(customer_data) +
   geom_smooth(aes(x = age, y = income), method = "auto") + 
   lims(y = c(0, 200000))
 ```
+
+```{r scatter-plot2}
+layer1 +
+  geom_point(aes(x = age, y = income)) +
+  geom_smooth(aes(x = age, y = income, method = "auto"))
+```
+
+Conclusion: There is an increase in income among age groups between 25 and 60, and after that the income is flat.
 
 <p class="blue_box">
 In summary, the two dimensional visualizations provide a great starting point for exploratory data analysis. The below table summarizes  </p>

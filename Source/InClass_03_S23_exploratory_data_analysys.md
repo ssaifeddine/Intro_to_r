@@ -135,14 +135,21 @@ layer1<- ggplot(data = customer_data)
 layer1 +
   geom_histogram(aes(x=income)) +
   lims(x = c(0, 200000)) +
-  scale_x_continuous(labels = scales::dollar_format())
+  scale_x_continuous(labels = scales::dollar_format(),
+                     limits = c(0, 200000))
 ```
 
     ## Scale for x is already present.
     ## Adding another scale for x, which will replace the existing scale.
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
+    ## Warning: Removed 1471 rows containing non-finite values (`stat_bin()`).
+
+    ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
+
 ![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/histogram-1.png)<!-- -->
+
+Conclusion: The data is not normally distributed.
 
 - Density plots are another method for analyzing the distribution of
   univariate data  
@@ -154,6 +161,9 @@ layer1 +
 ```
 
 ![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/density_plot-1.png)<!-- -->
+
+Analysis: the maximum number of customers in our data set are within the
+age of 25 to 75.
 
 … Might help sometimes
 
@@ -224,14 +234,13 @@ ggplot(health_ins_count_by_marital_status, aes(x=marital_status, y = ct)) +
 
 ![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/side-by-side_bar_plot_2-1.png)<!-- -->
 
-- Create a bar chart to present the count values of various
-  marital_statuses
+- Create a bar chart to present the count values of various state_of_res
 
 ``` r
 layer1 +
-  geom_bar(aes(x = marital_status, fill = health_ins), stat = "count") +
-  geom_text(aes(x = marital_status, label = ..count..),
-            stat = "count")
+  geom_bar(aes(x = reorder(state_of_res, state_of_res, FUN = function(x) length(x)))) +
+  scale_x_discrete(name = "state of residence") +
+  coord_flip()
 ```
 
 ![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/bar_chart_desc-1.png)<!-- -->
@@ -250,6 +259,15 @@ ggplot(customer_data[!is.na(customer_data$housing_type),]) +
 
 ![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/facet_bar_plots-1.png)<!-- -->
 
+``` r
+ggplot(data = customer_data[!is.na(customer_data$housing_type),]) +
+  geom_bar(aes(x= marital_status, fill = health_ins), position = "dodge", stat = "count") +
+  facet_wrap(~housing_type, scales = "free_x") +
+  coord_flip()
+```
+
+![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/facet_bar_plot2-1.png)<!-- -->
+
 - Compare population densities across categories
 
 ``` r
@@ -260,6 +278,18 @@ ggplot(data = customer_data) +
 
     ## Warning in geom_density(aes(x = age, color = marital_status, linetype =
     ## marital_status, : Ignoring unknown aesthetics: position
+
+![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/density_comparison_2-1.png)<!-- -->
+
+- Compare density plots for income and marital status
+
+``` r
+layer1 +
+  geom_density(aes(x = income, color = marital_status, linetype = marital_status)) +
+  scale_x_continuous(limits = c(0, 100000))
+```
+
+    ## Warning: Removed 5682 rows containing non-finite values (`stat_density()`).
 
 ![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/density_comparison-1.png)<!-- -->
 
@@ -283,6 +313,22 @@ ggplot(customer_data) +
     ## Warning: Removed 1471 rows containing missing values (`geom_point()`).
 
 ![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/scatter-plot1-1.png)<!-- -->
+
+``` r
+layer1 +
+  geom_point(aes(x = age, y = income)) +
+  geom_smooth(aes(x = age, y = income, method = "auto"))
+```
+
+    ## Warning in geom_smooth(aes(x = age, y = income, method = "auto")): Ignoring
+    ## unknown aesthetics: method
+
+    ## `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+
+![](InClass_03_S23_exploratory_data_analysys_files/figure-gfm/scatter-plot2-1.png)<!-- -->
+
+Conclusion: There is an increase in income among age groups between 25
+and 60, and after that the income is flat.
 
 <p class="blue_box">
 In summary, the two dimensional visualizations provide a great starting
